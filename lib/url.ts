@@ -1,18 +1,7 @@
 const TRACKING = new Set(['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','fbclid']);
-
-export function normalizeHistoricalUrl(input: string) {
-  try {
-    const u = new URL(input);
-    u.protocol = 'https:';
-    u.hostname = u.hostname.toLowerCase().replace(/^www\./, '');
-    u.hash = '';
-    for (const key of [...u.searchParams.keys()]) if (TRACKING.has(key)) u.searchParams.delete(key);
-    u.pathname = u.pathname.replace(/\/index\.(html?|php)$/i, '/').replace(/\/{2,}/g, '/');
-    if (!u.pathname.includes('.') && !u.pathname.endsWith('/')) u.pathname += '/';
-    return u.toString();
-  } catch { return input; }
+export function normalizeHistoricalUrl(input:string){
+ try{const u=new URL(input);u.protocol='https:';u.hostname=u.hostname.toLowerCase().replace(/^www\./,'');u.hash='';for(const key of [...u.searchParams.keys()])if(TRACKING.has(key))u.searchParams.delete(key);u.pathname=u.pathname.replace(/\/index\.(html?|php|asp|aspx)$/i,'/').replace(/\/{2,}/g,'/');if(!u.pathname.includes('.')&&!u.pathname.endsWith('/'))u.pathname+='/';u.searchParams.sort();return u.toString();}catch{return input;}
 }
-
-export function depthOf(input: string) {
-  try { return new URL(input).pathname.split('/').filter(Boolean).length; } catch { return 0; }
-}
+export function depthOf(input:string){try{return new URL(input).pathname.split('/').filter(Boolean).length}catch{return 0}}
+export function parentPathOf(input:string){try{const p=new URL(input).pathname;const parts=p.split('/').filter(Boolean);if(parts.length<=1)return '/';parts.pop();return '/'+parts.join('/')+'/';}catch{return null}}
+export function aliasReason(original:string,canonical:string){try{const o=new URL(original),c=new URL(canonical);const reasons:string[]=[];if(o.protocol!==c.protocol)reasons.push('protocol');if(o.hostname.replace(/^www\./,'')===c.hostname&&o.hostname!==c.hostname)reasons.push('www');if(/\/index\.(html?|php|asp|aspx)$/i.test(o.pathname))reasons.push('index-file');if(o.hash)reasons.push('fragment');return reasons.length?`Normalized: ${reasons.join(', ')}`:'Canonical equivalent';}catch{return 'Normalized historical alias'}}

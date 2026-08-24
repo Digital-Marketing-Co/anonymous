@@ -1,0 +1,3 @@
+import { NextRequest,NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';
+export const runtime='nodejs';
+export async function GET(req:NextRequest){const domain=req.nextUrl.searchParams.get('domain')||'anonymous.cool';try{const rows=await prisma.orphanPage.findMany({where:{canonical:{domain:{name:domain}}},include:{canonical:{select:{url:true,path:true,firstSeen:true,lastSeen:true,_count:{select:{snapshots:true}}}}},orderBy:{confidence:'desc'}});return NextResponse.json({orphans:rows});}catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Unknown error'},{status:500})}}

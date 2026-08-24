@@ -1,6 +1,6 @@
 {
   "name": "anonymous-cool-archive-reconstruction",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,7 +9,13 @@
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "ingest": "tsx scripts/ingest.ts"
+    "ingest": "tsx scripts/ingest.ts",
+    "ingest:deep": "tsx scripts/deep-ingest.ts",
+    "analyze": "tsx scripts/analyze.ts",
+    "provenance": "tsx scripts/provenance.ts",
+    "sitemaps": "tsx scripts/sitemaps.ts",
+    "export": "tsx scripts/export.ts",
+    "pipeline": "npm run ingest -- anonymous.cool && npm run ingest:deep -- anonymous.cool 500 && npm run provenance -- anonymous.cool && npm run sitemaps -- anonymous.cool && npm run analyze -- anonymous.cool && npm run export -- anonymous.cool exports"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
@@ -18,7 +24,8 @@
     "next": "^15.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "zod": "^3.24.0"
+    "zod": "^3.24.0",
+    "@vercel/analytics": "^1.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

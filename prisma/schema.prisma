@@ -1,79 +1,314 @@
 generator client { provider = "prisma-client-js" }
 datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
 
-enum ChangeType { PAGE_FIRST_OBSERVED PAGE_LAST_OBSERVED TEXT_ADDED TEXT_REMOVED TEXT_MODIFIED TITLE_CHANGE METADATA_CHANGE LINK_ADDED LINK_REMOVED REDIRECT_CHANGE SCRIPT_CHANGE MEDIA_CHANGE }
+enum ChangeType {
+  PAGE_FIRST_OBSERVED PAGE_LAST_OBSERVED TEXT_ADDED TEXT_REMOVED TEXT_MODIFIED
+  TITLE_CHANGE METADATA_CHANGE LINK_ADDED LINK_REMOVED LINK_CHANGED REDIRECT_CHANGE
+  SCRIPT_CHANGE MEDIA_CHANGE CANONICAL_CHANGE ROBOTS_CHANGE SITEMAP_MEMBERSHIP_CHANGE
+}
 enum EvidenceClass { ARCHIVED_EVIDENCE COMPUTED_DIFFERENCE REASONABLE_INFERENCE UNPROVEN_ATTRIBUTION }
+enum AnomalyKind { EXTERNAL_SCRIPT IFRAME_INJECTION OBFUSCATED_SCRIPT SUSPICIOUS_REDIRECT HIDDEN_CONTENT SPAM_INJECTION TEMPLATE_REPLACEMENT MASS_LINK_CHANGE ENCODING_ANOMALY ARCHIVE_REPLAY_INCONSISTENCY MALWARE_INDICATOR OTHER }
+enum CrawlStatus { PENDING RUNNING PAUSED COMPLETE FAILED }
+enum ResourceKind { HTML IMAGE SCRIPT STYLESHEET DOCUMENT FEED SITEMAP OTHER }
 
 model Domain {
-  id String @id @default(cuid())
-  name String @unique
+  id        String   @id @default(cuid())
+  name      String   @unique
   createdAt DateTime @default(now())
-  urls CanonicalUrl[]
+  updatedAt DateTime @updatedAt
+  urls      CanonicalUrl[]
+  sitemaps  HistoricalSitemap[]
+  jobs      CrawlJob[]
 }
+
 model CanonicalUrl {
-  id String @id @default(cuid())
-  domainId String
-  domain Domain @relation(fields:[domainId], references:[id], onDelete:Cascade)
-  url String @unique
-  path String
-  depth Int
-  firstSeen DateTime?
-  lastSeen DateTime?
-  isOrphan Boolean @default(false)
-  aliases UrlAlias[]
-  snapshots Snapshot[]
-  changes ChangeEvent[]
+  id          String   @id @default(cuid())
+  domainId    String
+  domain      Domain   @relation(fields:[domainId], references:[id], onDelete:Cascade)
+  url         String   @unique
+  path        String
+  parentPath  String?
+  depth       Int
+  firstSeen   DateTime?
+  lastSeen    DateTime?
+  isOrphan    Boolean  @default(false)
+  orphanScore Float?
+  aliases     UrlAlias[]
+  snapshots   Snapshot[]
+  changes     ChangeEvent[]
+  outboundLinks Link[] @relation("SourceLinks")
+  inboundLinks  Link[] @relation("DestinationLinks")
+  orphanPage  OrphanPage?
+  sitemapEntries SitemapEntry[]
+  textBlocks TextBlock[]
+  @@index([domainId, path])
+  @@index([isOrphan])
 }
+
 model UrlAlias {
-  id String @id @default(cuid())
+  id             String @id @default(cuid())
   canonicalUrlId String
-  canonical CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
-  original String
-  reason String?
+  canonical      CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  original       String
+  reason         String?
+  firstSeen      DateTime?
+  lastSeen       DateTime?
   @@unique([canonicalUrlId, original])
 }
+
 model Snapshot {
-  id String @id @default(cuid())
+  id             String @id @default(cuid())
   canonicalUrlId String
-  canonical CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
-  timestamp String
-  capturedAt DateTime
-  original String
-  mimeType String?
-  statusCode Int?
-  digest String?
-  byteLength Int?
-  replayUrl String
-  rawReplayUrl String
+  canonical      CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  timestamp      String
+  capturedAt     DateTime
+  original       String
+  mimeType       String?
+  statusCode     Int?
+  digest         String?
+  byteLength     Int?
+  replayUrl      String
+  rawReplayUrl   String
+  redirectTarget String?
+  fetchedAt      DateTime?
+  fetchError     String?
   contentVersion ContentVersion?
+  response       SnapshotResponse?
+  links          Link[]
+  media          MediaAsset[]
+  anomalies      ArchiveAnomaly[]
+  previousChanges ChangeEvent[] @relation("PreviousSnapshot")
+  nextChanges     ChangeEvent[] @relation("NextSnapshot")
   @@unique([canonicalUrlId, timestamp, original])
-  @@index([capturedAt])
+  @@index([canonicalUrlId, capturedAt])
+  @@index([digest])
 }
+
+model SnapshotResponse {
+  id          String @id @default(cuid())
+  snapshotId  String @unique
+  snapshot    Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
+  httpStatus  Int?
+  contentType String?
+  headersJson Json?
+  rawSha256   String?
+  rawBytes    Int?
+}
+
 model ContentVersion {
-  id String @id @default(cuid())
-  snapshotId String @unique
-  snapshot Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
-  rawSha256 String?
-  htmlSha256 String?
-  textSha256 String?
-  title String?
-  visibleText String?
-  normalizedHtml String?
+  id             String @id @default(cuid())
+  snapshotId     String @unique
+  snapshot       Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
+  rawSha256      String?
+  htmlSha256     String?
+  textSha256     String?
+  title          String?
+  description    String?
+  canonicalTag   String?
+  robots         String?
+  language       String?
+  visibleText    String? @db.Text
+  normalizedHtml String? @db.Text
+  metadataJson   Json?
+  scriptHosts    Json?
+  iframeHosts    Json?
+  wordCount      Int?
+  createdAt      DateTime @default(now())
+  @@index([textSha256])
+  @@index([htmlSha256])
 }
+
 model ChangeEvent {
-  id String @id @default(cuid())
-  canonicalUrlId String
-  canonical CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
-  type ChangeType
-  evidenceClass EvidenceClass
+  id                 String @id @default(cuid())
+  canonicalUrlId     String
+  canonical          CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  type               ChangeType
+  evidenceClass      EvidenceClass
   previousSnapshotId String?
-  nextSnapshotId String?
-  earliestPossible DateTime?
-  latestPossible DateTime?
-  beforeText String?
-  afterText String?
-  confidence Float @default(1)
-  notes String?
-  createdAt DateTime @default(now())
-  @@index([earliestPossible])
+  previousSnapshot   Snapshot? @relation("PreviousSnapshot", fields:[previousSnapshotId], references:[id], onDelete:SetNull)
+  nextSnapshotId     String?
+  nextSnapshot       Snapshot? @relation("NextSnapshot", fields:[nextSnapshotId], references:[id], onDelete:SetNull)
+  earliestPossible   DateTime?
+  latestPossible     DateTime?
+  beforeText         String? @db.Text
+  afterText          String? @db.Text
+  detailsJson        Json?
+  confidence         Float @default(1)
+  notes              String? @db.Text
+  createdAt          DateTime @default(now())
+  textChanges        TextChange[]
+  metadataChanges    MetadataChange[]
+  linkChanges        LinkChange[]
+  @@index([canonicalUrlId, earliestPossible])
+  @@index([type])
+}
+
+model TextChange {
+  id            String @id @default(cuid())
+  changeEventId String
+  event         ChangeEvent @relation(fields:[changeEventId], references:[id], onDelete:Cascade)
+  operation     String
+  beforeText    String? @db.Text
+  afterText     String? @db.Text
+  startToken    Int?
+  endToken      Int?
+}
+
+model MetadataChange {
+  id            String @id @default(cuid())
+  changeEventId String
+  event         ChangeEvent @relation(fields:[changeEventId], references:[id], onDelete:Cascade)
+  key           String
+  beforeValue   String? @db.Text
+  afterValue    String? @db.Text
+}
+
+model Link {
+  id                   String @id @default(cuid())
+  snapshotId           String
+  snapshot             Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
+  sourceCanonicalUrlId String
+  source               CanonicalUrl @relation("SourceLinks", fields:[sourceCanonicalUrlId], references:[id], onDelete:Cascade)
+  destinationCanonicalUrlId String?
+  destination          CanonicalUrl? @relation("DestinationLinks", fields:[destinationCanonicalUrlId], references:[id], onDelete:SetNull)
+  href                 String @db.Text
+  normalizedHref       String? @db.Text
+  anchorText           String? @db.Text
+  isInternal           Boolean @default(false)
+  rel                   String?
+  @@index([sourceCanonicalUrlId, snapshotId])
+  @@index([destinationCanonicalUrlId])
+}
+
+model LinkChange {
+  id            String @id @default(cuid())
+  changeEventId String
+  event         ChangeEvent @relation(fields:[changeEventId], references:[id], onDelete:Cascade)
+  operation     String
+  href          String @db.Text
+  anchorBefore  String? @db.Text
+  anchorAfter   String? @db.Text
+}
+
+model MediaAsset {
+  id         String @id @default(cuid())
+  snapshotId String
+  snapshot   Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
+  url        String @db.Text
+  kind       ResourceKind @default(OTHER)
+  altText    String? @db.Text
+  caption    String? @db.Text
+  sha256     String?
+  @@index([snapshotId])
+}
+
+model Redirect {
+  id          String @id @default(cuid())
+  domainId    String
+  sourceUrl   String @db.Text
+  targetUrl   String @db.Text
+  observedAt  DateTime
+  statusCode  Int?
+  snapshotId  String?
+  @@index([domainId, observedAt])
+}
+
+model HistoricalSitemap {
+  id          String @id @default(cuid())
+  domainId    String
+  domain      Domain @relation(fields:[domainId], references:[id], onDelete:Cascade)
+  sourceUrl   String @db.Text
+  capturedAt  DateTime
+  snapshotId  String?
+  kind        String
+  sha256      String?
+  entries     SitemapEntry[]
+  @@index([domainId, capturedAt])
+}
+
+model SitemapEntry {
+  id             String @id @default(cuid())
+  sitemapId      String
+  sitemap        HistoricalSitemap @relation(fields:[sitemapId], references:[id], onDelete:Cascade)
+  canonicalUrlId String?
+  canonical      CanonicalUrl? @relation(fields:[canonicalUrlId], references:[id], onDelete:SetNull)
+  loc            String @db.Text
+  lastmod        DateTime?
+  @@index([canonicalUrlId])
+}
+
+model OrphanPage {
+  id             String @id @default(cuid())
+  canonicalUrlId String @unique
+  canonical      CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  detectedAt     DateTime @default(now())
+  formerParent   String?
+  recommendedParent String?
+  reason         String @db.Text
+  confidence     Float @default(0.5)
+  inboundCount   Int @default(0)
+}
+
+model ArchiveAnomaly {
+  id          String @id @default(cuid())
+  snapshotId  String
+  snapshot    Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
+  kind        AnomalyKind
+  observation String @db.Text
+  interpretation String? @db.Text
+  attributionEvidence String? @db.Text
+  confidence  Float @default(0.5)
+  detailsJson Json?
+  createdAt   DateTime @default(now())
+  @@index([kind])
+}
+
+model CrawlJob {
+  id          String @id @default(cuid())
+  domainId    String
+  domain      Domain @relation(fields:[domainId], references:[id], onDelete:Cascade)
+  kind        String
+  status      CrawlStatus @default(PENDING)
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  processed   Int @default(0)
+  total       Int?
+  error       String? @db.Text
+  checkpoint  CrawlCheckpoint?
+  createdAt   DateTime @default(now())
+}
+
+model CrawlCheckpoint {
+  id        String @id @default(cuid())
+  jobId     String @unique
+  job       CrawlJob @relation(fields:[jobId], references:[id], onDelete:Cascade)
+  cursor    String?
+  lastId    String?
+  stateJson Json?
+  updatedAt DateTime @updatedAt
+}
+
+
+model TextBlock {
+  id             String @id @default(cuid())
+  canonicalUrlId String
+  canonical      CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  sha256         String
+  text           String @db.Text
+  firstObserved  DateTime
+  lastObserved   DateTime
+  occurrences    TextBlockOccurrence[]
+  @@unique([canonicalUrlId, sha256])
+  @@index([canonicalUrlId, firstObserved])
+}
+
+model TextBlockOccurrence {
+  id          String @id @default(cuid())
+  textBlockId String
+  textBlock   TextBlock @relation(fields:[textBlockId], references:[id], onDelete:Cascade)
+  snapshotId  String
+  position    Int
+  observedAt  DateTime
+  @@unique([textBlockId, snapshotId, position])
+  @@index([snapshotId])
 }
