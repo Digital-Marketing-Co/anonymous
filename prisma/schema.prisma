@@ -1,0 +1,79 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum ChangeType { PAGE_FIRST_OBSERVED PAGE_LAST_OBSERVED TEXT_ADDED TEXT_REMOVED TEXT_MODIFIED TITLE_CHANGE METADATA_CHANGE LINK_ADDED LINK_REMOVED REDIRECT_CHANGE SCRIPT_CHANGE MEDIA_CHANGE }
+enum EvidenceClass { ARCHIVED_EVIDENCE COMPUTED_DIFFERENCE REASONABLE_INFERENCE UNPROVEN_ATTRIBUTION }
+
+model Domain {
+  id String @id @default(cuid())
+  name String @unique
+  createdAt DateTime @default(now())
+  urls CanonicalUrl[]
+}
+model CanonicalUrl {
+  id String @id @default(cuid())
+  domainId String
+  domain Domain @relation(fields:[domainId], references:[id], onDelete:Cascade)
+  url String @unique
+  path String
+  depth Int
+  firstSeen DateTime?
+  lastSeen DateTime?
+  isOrphan Boolean @default(false)
+  aliases UrlAlias[]
+  snapshots Snapshot[]
+  changes ChangeEvent[]
+}
+model UrlAlias {
+  id String @id @default(cuid())
+  canonicalUrlId String
+  canonical CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  original String
+  reason String?
+  @@unique([canonicalUrlId, original])
+}
+model Snapshot {
+  id String @id @default(cuid())
+  canonicalUrlId String
+  canonical CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  timestamp String
+  capturedAt DateTime
+  original String
+  mimeType String?
+  statusCode Int?
+  digest String?
+  byteLength Int?
+  replayUrl String
+  rawReplayUrl String
+  contentVersion ContentVersion?
+  @@unique([canonicalUrlId, timestamp, original])
+  @@index([capturedAt])
+}
+model ContentVersion {
+  id String @id @default(cuid())
+  snapshotId String @unique
+  snapshot Snapshot @relation(fields:[snapshotId], references:[id], onDelete:Cascade)
+  rawSha256 String?
+  htmlSha256 String?
+  textSha256 String?
+  title String?
+  visibleText String?
+  normalizedHtml String?
+}
+model ChangeEvent {
+  id String @id @default(cuid())
+  canonicalUrlId String
+  canonical CanonicalUrl @relation(fields:[canonicalUrlId], references:[id], onDelete:Cascade)
+  type ChangeType
+  evidenceClass EvidenceClass
+  previousSnapshotId String?
+  nextSnapshotId String?
+  earliestPossible DateTime?
+  latestPossible DateTime?
+  beforeText String?
+  afterText String?
+  confidence Float @default(1)
+  notes String?
+  createdAt DateTime @default(now())
+  @@index([earliestPossible])
+}
