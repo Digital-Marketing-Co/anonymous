@@ -167,12 +167,6 @@ import { Analytics } from "@vercel/analytics/next";
 The root layout renders `<Analytics />` after the application content, so page-view and visitor telemetry is collected across all routes when deployed on Vercel. The package is included in `dependencies`; run `npm install` after extracting the project to install it locally.
 
 
-## Vercel build fix (v2.1.1)
+## Vercel build fix — v2.1.2
 
-Prisma schema syntax was normalized for Prisma 6 / Vercel builds:
-
-- `generator` and `datasource` blocks now use standard multiline Prisma syntax.
-- enum values are declared one value per line.
-- relation attributes were reformatted to canonical Prisma syntax.
-
-This fixes the `P1012` validation failure reported by Vercel where the one-line generator/datasource declarations and multi-value enum lines were parsed as invalid generator/enum definitions.
+Fixed strict TypeScript indexing in `scripts/analyze.ts` by typing dynamic metadata maps as `Record<string, unknown>`. This resolves the Vercel error: `Element implicitly has an any type because expression of type string cannot be used to index type ...`.
