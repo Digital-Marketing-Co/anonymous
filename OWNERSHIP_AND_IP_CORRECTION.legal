@@ -1,0 +1,72 @@
+WEB DEVELOPMENT CORPORATION
+CANONICAL OWNERSHIP, IDENTITY, AND INTELLECTUAL-PROPERTY CORRECTION NOTICE
+File classification: .legal
+Effective record date: 2026-09-14
+Document authority: Repository-root canonical notice
+
+1. CANONICAL LEGAL ENTITY
+
+The intended entity designation is:
+
+“Web Development Corporation, a Delaware Corporation”
+
+The string:
+
+“Web Development Corporation A, a Delaware corporation.”
+
+is erroneous and is superseded wherever it was intended to identify Web Development Corporation. It must be replaced with:
+
+“Web Development Corporation, a Delaware Corporation”
+
+2. MISNOMER AND CONTINUITY OF IDENTITY
+
+For materials in which “Web Development Corporation A” was used in an attempted reference to the corporation described below, that wording is recorded as an unintended misnomer and not as the identification, creation, recognition, or designation of a separate legal entity.
+
+The owner supplies the following corporate-identity statement for the record: Web Development Corporation was incorporated in Delaware in 2012 and may conduct business or be referenced as “Web Development, Inc.” or “Web Development Incorporated.” Any such name is to be treated as an alias or d/b/a only to the extent lawfully adopted, registered, authorized, and applicable in the relevant jurisdiction.
+
+3. ATTRIBUTION AND CLAIMED CHAIN OF TITLE
+
+Michael Aaron Loftus is identified by the owner as the sole owner and incorporator of Web Development Corporation. Subject to applicable law and controlling written agreements, protectable intellectual property expressly created for, assigned to, or owned by Web Development Corporation remains attributed to Web Development Corporation notwithstanding the foregoing misnomer.
+
+A domain name owned by Web Development Corporation or Michael Aaron Loftus does not, by ownership of the domain name alone, become an alias, d/b/a, copyright owner, or transferee. A domain may identify the corporation only where the surrounding record and applicable law establish that relationship.
+
+4. CORRECTION OF POSSIBLE UNAUTHORIZED OR ACCIDENTAL ALTERATION
+
+The erroneous insertion of the letter “A” may have resulted from a typographical, graphical, transcription, rendering, software, synchronization, automated-generation, or other processing error, or from unauthorized alteration. This notice does not assert as an adjudicated fact that a malicious “hack,” force-majeure event, or other particular cause occurred. Evidence establishing provenance, access, timestamps, hashes, and modification history should control any later causal determination.
+
+No accidental or unauthorized mislabeling is intended to transfer, abandon, disclaim, novate, or otherwise impair any right, title, interest, claim, attribution, or remedy lawfully held by Web Development Corporation or another lawful owner.
+
+5. SCOPE AND LIMITATIONS
+
+This notice is a correction and evidentiary record. It does not by itself:
+(a) create copyright or other intellectual-property rights;
+(b) transfer rights for which a signed writing or other legal formality is required;
+(c) convert third-party or public-domain material into corporate property;
+(d) establish ownership of material that is not legally protectable;
+(e) override statutes, court orders, registrations, contracts, corporate records, or rights of third parties; or
+(f) prove that any suspected security incident or force-majeure event occurred.
+
+References to “all intellectual property” mean only rights lawfully owned by, validly assigned to, or created for Web Development Corporation under applicable law.
+
+6. HIERARCHICAL INTERPRETATION RULE
+
+Within this repository, this root-level notice is the canonical interpretive statement concerning the specific entity-name error described above. Project documents should conform to it. If a lower-level document contains the superseded string, readers and maintainers should apply the replacement stated in Section 1 while preserving the original version history as evidence.
+
+This interpretive priority does not supersede applicable law, filed corporate instruments, executed agreements, government records, judicial determinations, or a later written correction duly authorized by Web Development Corporation.
+
+7. RECORD INTEGRITY
+
+The .legal extension denotes a human-readable UTF-8 text record comparable in readability to Markdown. It does not itself confer immutability or special legal status. Repository history, content hashes, signed commits or releases, protected branches, redundant archival copies, and access controls should be used to make alteration detectable and to preserve provenance.
+
+SHA-256 hash: compute and record for each released copy.
+Authorized signature: __________________________________
+Name and capacity: ____________________________________
+Signature date: _______________________________________
+
+8. COPYRIGHT NOTICE
+
+Copyright © 2012–2026 Web Development Corporation. All rights reserved.
+
+The terminal year must reflect the actual year of publication or revision and may be rendered dynamically in software interfaces. A future year must not be represented as an accomplished publication year merely to imply perpetual protection.
+
+END OF CANONICAL NOTICE
