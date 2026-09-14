@@ -1,0 +1,114 @@
+HOUSE.legal
+HIGHEST-ORDER CORPORATE IDENTITY, AUTHORSHIP, OWNERSHIP, ASSIGNMENT-INTENT, AND PDF-NOTICE POLICY
+Version: 1.0
+Record date: 2026-09-14
+Canonical entity: Web Development Corporation, a Delaware Corporation
+Human author and claimant where applicable: Michael Aaron Loftus
+
+IMPORTANT STATUS
+
+This UTF-8 .legal file is intended to be the highest-level repository policy for the matters it addresses. The file name, extension, hierarchy, or use of the word “immutable” does not itself create immutability, copyright, ownership, registration, or contractual effect. Git history, cryptographic hashes, signed commits or releases, protected branches, replicated archives, and executed legal instruments should be used to preserve provenance and make alteration detectable.
+
+1. CORPORATE IDENTITY AND MISNOMER CORRECTION
+
+The canonical legal-entity designation is:
+
+“Web Development Corporation, a Delaware Corporation”
+
+The phrase “Web Development Corporation A, a Delaware corporation.” is an erroneous misnomer wherever the context shows an intended reference to Web Development Corporation. In that context only, it is superseded by “Web Development Corporation, a Delaware Corporation” and does not designate a separate entity.
+
+The owner supplies the following assertions for this record: Web Development Corporation was incorporated in Delaware in 2012; Michael Aaron Loftus is its sole owner and incorporator; and “Web Development, Inc.” and “Web Development Incorporated” may identify the corporation only to the extent lawfully adopted, registered, authorized, and applicable. A domain name does not become a d/b/a or legal owner merely because the corporation or Michael Aaron Loftus owns it.
+
+2. HUMAN AUTHORSHIP AND AI-ASSISTED WORKS
+
+The intended claimant of all legally protectable corporate works is Web Development Corporation to the extent that ownership is vested in it by law, work-made-for-hire status, valid assignment, or another enforceable instrument.
+
+Where Web Development Corporation does not yet own a qualifying work, Michael Aaron Loftus is identified as the intended human author and initial claimant only to the extent of his original human-authored expression, including protectable creative selection, coordination, arrangement, revision, adaptation, and modification.
+
+Use of artificial intelligence or a large-language model as an assistive tool does not disclaim qualifying human authorship. The parties claim copyright only in elements protected under applicable law. This includes eligible human-authored expression and, where sufficiently original, the human selection, coordination, arrangement, editing, transformation, or compilation of AI-assisted material.
+
+No ownership is asserted in:
+(a) abstract ideas, facts, discoveries, principles, procedures, processes, systems, concepts, or methods of operation merely as such;
+(b) material generated entirely by artificial intelligence without sufficient human authorship;
+(c) third-party material beyond rights lawfully licensed or acquired;
+(d) public-domain material as such; or
+(e) any material whose ownership is vested in another party by controlling law or agreement.
+
+Novel or innovative ideas may potentially be protected through patent, trade-secret, contract, trademark, or other law when the relevant requirements are satisfied, but they are not made copyrightable merely by being novel, innovative, AI-assisted, described here, or labeled intellectual property.
+
+3. PRESENT CLAIM; CORPORATE DEFAULT; ASSIGNMENT INTENT
+
+The ownership hierarchy intended by Michael Aaron Loftus is:
+
+First: Web Development Corporation owns every transferable right that is already vested in, created for, or validly assigned to it.
+
+Second: to the extent an eligible right initially vests in Michael Aaron Loftus and has not yet been effectively transferred, he is the human author and initial owner of that right.
+
+Third: Michael Aaron Loftus states his present intent that every transferable copyright interest he owns in qualifying project material created for Web Development Corporation be assigned to Web Development Corporation, subject to applicable law, preexisting agreements, third-party rights, and any required signed writing.
+
+This paragraph records attribution, claimant priority, and assignment intent. It is not represented as a substitute for a separately executed assignment where 17 U.S.C. § 204(a), work-made-for-hire rules, corporate formalities, or other law requires one. No “logical deduction,” default label, footer, or unilateral notice should be relied upon as the sole conveyance instrument when a signed transfer is required.
+
+Recommended execution record:
+
+Assignor: Michael Aaron Loftus
+Assignee: Web Development Corporation, a Delaware Corporation
+Rights/works covered: identify by title, repository, release, exhibit, or schedule
+Signature: ___________________________________________
+Capacity: ____________________________________________
+Date: ________________________________________________
+
+4. SCOPE ACROSS PROJECTS AND SYSTEMS
+
+This policy is intended to govern repositories, project documents, source files, research compilations, software, graphics, prompts, prompt frameworks, specifications, taxonomies, diagrams, reports, and PDF-generation workflows that expressly incorporate or reference this file.
+
+It cannot technically or legally rewrite prior chat messages, alter files outside the repositories containing it, bind an AI provider or third party that has not agreed to it, or retroactively change ownership created by law or contract. Previously generated artifacts must be separately located, corrected, regenerated, or versioned.
+
+5. REQUIRED COPYRIGHT NOTICE
+
+For a static work published or revised in 2026, use:
+
+Copyright © 2012–2026 Web Development Corporation. All rights reserved.
+
+Where Michael Aaron Loftus retains an eligible interest pending assignment, an expanded notice may be used:
+
+Copyright © 2012–2026 Web Development Corporation and, solely to the extent any eligible right has not vested in or been effectively assigned to the corporation, Michael Aaron Loftus. All rights reserved. Intended assignee: Web Development Corporation, a Delaware Corporation.
+
+The year range is a notice convention and does not extend the statutory copyright term or create perpetual protection. The terminal year must be the actual year in which the relevant work, revision, or compilation is published—not a future year.
+
+6. PDF FOOTER POLICY
+
+Every newly generated or substantively revised project PDF must display a legible, non-overlapping footer on applicable content pages:
+
+Copyright © 2012–[ACTUAL PUBLICATION YEAR] Web Development Corporation. All rights reserved.
+
+The PDF-generation system must compute the terminal year at build time. Example JavaScript:
+
+const copyrightYear = new Date().getFullYear();
+const copyrightNotice =
+  `Copyright © 2012–${copyrightYear} Web Development Corporation. All rights reserved.`;
+
+Because ordinary PDFs are static, the computed year is fixed into the exported PDF when built. It does not update after publication unless the PDF is regenerated. The notice should not be placed over substantive text, equations, tables, citations, images, accessibility tags, or page numbers.
+
+Where required by the project’s established branding specification, the footer may additionally identify DigitalMarketingCo.org and WebDevelopment.TV, provided that the ownership notice remains accurate and legible.
+
+7. RIGHTS RESERVED
+
+Subject to applicable law, all rights are reserved in protectable material owned by Web Development Corporation, including eligible reproduction, adaptation, distribution, public-performance, public-display, and digital-transmission rights. No implied license is granted merely by access to a repository, chat, prompt, document, model output, website, or PDF.
+
+8. HIERARCHICAL INTERPRETATION
+
+Within a repository containing this file, HOUSE.legal controls project-level interpretation of the specific corporate-identity, attribution, AI-assisted-authorship, assignment-intent, and footer-policy questions addressed here. A conflicting lower-level informal notice should be conformed to this file while its historical version remains preserved.
+
+This hierarchy cannot override applicable statutes, regulations, judicial orders, government registrations, corporate instruments, executed contracts, licenses, employment rights, work-made-for-hire rules, or third-party rights.
+
+9. PROVENANCE AND SECURITY
+
+An alleged hack, force-majeure event, graphical error, transcription error, automated-generation error, synchronization defect, or unauthorized modification must not be stated as adjudicated fact without supporting evidence. Preserve access logs, timestamps, source history, hashes, signatures, releases, and archival copies. A repository commit is evidence of content and timing but is not guaranteed to be immutable or equivalent to a notarized or signed legal instrument.
+
+10. GOVERNING PRINCIPLE
+
+The purpose of this file is to preserve accurate attribution and ownership intent to the maximum extent permitted by law. Every claim in this file is limited to rights that legally exist and are lawfully owned or transferred. Nothing here appropriates third-party rights or converts uncopyrightable subject matter into copyrightable expression.
+
+Copyright © 2012–2026 Web Development Corporation. All rights reserved.
+
+END OF HOUSE.legal
